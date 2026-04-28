@@ -3,25 +3,45 @@ import React from 'react';
 class EmployeeForm extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       name: '',
       email: '',
       title: '',
-      department: ''
+      department: '',
+      employees: []
     };
   }
 
-  handleChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
+  componentDidMount() {
+    const data = localStorage.getItem("employees");
+    if (data) {
+      this.setState({ employees: JSON.parse(data) });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.employees !== this.state.employees) {
+      localStorage.setItem("employees", JSON.stringify(this.state.employees));
+    }
+  }
+
+  handleChange = (e) => {
+    this.setState({ [e.target.name]: e.target.value });
   };
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(this.state);
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newEmployee = {
+      name: this.state.name,
+      email: this.state.email,
+      title: this.state.title,
+      department: this.state.department
+    };
 
     this.setState({
+      employees: [...this.state.employees, newEmployee],
       name: '',
       email: '',
       title: '',
@@ -31,16 +51,27 @@ class EmployeeForm extends React.Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <h2>New Employee Form</h2>
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <h2>New Employee Form</h2>
 
-        <input name="name" placeholder="Name" onChange={this.handleChange} value={this.state.name} />
-        <input name="email" placeholder="Email" onChange={this.handleChange} value={this.state.email} />
-        <input name="title" placeholder="Job Title" onChange={this.handleChange} value={this.state.title} />
-        <input name="department" placeholder="Department" onChange={this.handleChange} value={this.state.department} />
+          <input name="name" placeholder="Name" value={this.state.name} onChange={this.handleChange} />
+          <input name="email" placeholder="Email" value={this.state.email} onChange={this.handleChange} />
+          <input name="title" placeholder="Job Title" value={this.state.title} onChange={this.handleChange} />
+          <input name="department" placeholder="Department" value={this.state.department} onChange={this.handleChange} />
 
-        <button type="submit">Add Employee</button>
-      </form>
+          <button type="submit">Add Employee</button>
+        </form>
+
+        <h3>Employee List</h3>
+        <ul>
+          {this.state.employees.map((emp, index) => (
+            <li key={index}>
+              {emp.name} - {emp.title}
+            </li>
+          ))}
+        </ul>
+      </div>
     );
   }
 }
