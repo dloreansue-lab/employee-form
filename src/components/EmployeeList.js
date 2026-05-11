@@ -9,7 +9,10 @@ class EmployeeList extends React.Component {
         <ul>
           {this.props.employees.map((emp, index) => (
             <li key={index}>
-              {emp.name} - {emp.title} - {emp.department}
+              <strong>{emp.name}</strong><br />
+              Email: {emp.email}<br />
+              Title: {emp.title}<br />
+              Department: {emp.department}
             </li>
           ))}
         </ul>

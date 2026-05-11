@@ -1,4 +1,5 @@
 import React from "react";
+import './EmployeeForm.css';
 
 class EmployeeForm extends React.Component {
   constructor(props) {
@@ -8,16 +9,8 @@ class EmployeeForm extends React.Component {
       name: "",
       email: "",
       title: "",
-      department: "",
-      employees: []
+      department: ""
     };
-  }
-
-  componentDidMount() {
-    const data = localStorage.getItem("employees");
-    if (data) {
-      this.setState({ employees: JSON.parse(data) });
-    }
   }
 
   handleChange = (e) => {
@@ -36,25 +29,14 @@ class EmployeeForm extends React.Component {
       department: this.state.department
     };
 
-    const updatedEmployees = [
-      ...this.state.employees,
-      newEmployee
-    ];
+    this.props.addEmployee(newEmployee);
 
     this.setState({
-      employees: updatedEmployees,
       name: "",
       email: "",
       title: "",
       department: ""
     });
-
-    localStorage.setItem(
-      "employees",
-      JSON.stringify(updatedEmployees)
-    );
-
-    console.log(updatedEmployees);
   };
 
   render() {
@@ -91,19 +73,8 @@ class EmployeeForm extends React.Component {
             onChange={this.handleChange}
           />
 
-          <button type="submit">
-            Add Employee
-          </button>
+          <button type="submit">Add Employee</button>
         </form>
-
-        <h3>Employee List</h3>
-        <ul>
-          {this.state.employees.map((emp, index) => (
-            <li key={index}>
-              {emp.name} - {emp.title} - {emp.department}
-            </li>
-          ))}
-        </ul>
       </div>
     );
   }
